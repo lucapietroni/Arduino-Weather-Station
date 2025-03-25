@@ -20,22 +20,20 @@ void updateDisplay(WeatherData data) {
     display.setFont(&FreeMono9pt7b);
     display.setTextColor(GxEPD_BLACK);
 
-    display.setCursor(0, 20);
-    display.print(F("Ang: ")); display.print(data.angle, 1);
-    display.print(F("° Dir: ")); display.print(data.windDirection);
-
-    display.setCursor(0, 40);
-    display.print(F("Temp: ")); display.print(data.temperature, 1); 
-    display.print(F("°C Umid: ")); display.print(data.humidity, 1); display.print(F("%"));
-
-    display.setCursor(0, 60);
+    display.setCursor(1, 10);
+    display.print(F("Ang: ")); display.print(data.angle, 1); display.print(F("°"));
+    display.setCursor(1, 30);
+    display.print(F("Dir: ")); display.print(data.windDirection);
+    display.setCursor(1, 50);
+    display.print(F("Vel: ")); display.print(data.windSpeed, 2); display.print(F(" km/h"));
+    display.setCursor(1, 70);
+    display.print(F("T&U: ")); display.print(data.temperature, 1); display.print(F("°C ")); display.print(data.humidity, 1); display.print(F("%"));
+    display.setCursor(1, 90);
     display.print(F("PPM: ")); display.print(data.PPM, 0);
-
-    display.setCursor(0, 80);
+    display.setCursor(1, 110);
     display.print(F("Press: ")); display.print(data.pressure, 1); display.print(F(" hPa"));
-
-    display.setCursor(0, 100);
-    display.print(F("Prev: ")); display.print(data.forecast);
+    display.setCursor(1, 130);
+    display.print(F("Prev:")); display.print(data.forecast);
 
     display.update();
 }
