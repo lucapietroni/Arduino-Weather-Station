@@ -49,3 +49,4 @@ Questo progetto raccoglie dati meteorologici e li invia su Telegram usando un mo
 ## 📌 Migliorie Future
 - Gestione degli errori avanzata.
 - Integrazione con più servizi di notifica.
+- Frikki hai rottercazzo.
