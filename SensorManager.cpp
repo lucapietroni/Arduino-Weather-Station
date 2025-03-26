@@ -17,11 +17,25 @@ Preferences preferences;
 float previousPressure = 0.0;
 float pressureTwoHoursAgo = 0.0;
 
+// Variabili globali per il sensore Hall
+volatile byte pulseCount = 0;
+unsigned long lastPulseTime = 0;
+unsigned long lastTime = 0;
+
 // Direzioni del vento in memoria PROGMEM
 const char wind_directions[][4] PROGMEM = {
     "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
     "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"
 };
+
+// Funzione di Interrupt per contare gli impulsi
+void countPulse() {
+    unsigned long now = millis();
+    if (now - lastPulseTime > MIN_PULSE_INTERVAL) {  // Filtraggio per evitare conteggi errati
+        pulseCount++;
+        lastPulseTime = now;
+    }
+}
 
 // Inizializzazione dei sensori
 void initializeSensors() {
@@ -56,6 +70,21 @@ WeatherData readSensors() {
     data.pressure = bmp.readPressure() / 100.0F;
     data.PPM = mq135_sensor.getCorrectedPPM(data.temperature, data.humidity);
     data.forecast = getWeatherPrediction(data.pressure);
+    unsigned long currentTime = millis();
+    float timeSec = (currentTime - lastTime) / 1000.0;
+    lastTime = currentTime;
+
+    float rotationsPerSec = 0.0;
+    if (pulseCount > 0) {
+        rotationsPerSec = pulseCount / timeSec;  // Calcolo della frequenza di rotazione (giri al secondo)
+    } else {
+        Serial.println(F("❌ Nessun impulso dal sensore Hall. Velocità del vento = 0 km/h."));
+    }
+    
+    // Calcolo della velocità del vento
+    float circumference = 2 * PI * RADIUS_M;    // Circonferenza del sensore (in metri)
+    data.windSpeed = rotationsPerSec * circumference * 3.6;  // Conversione da m/s a km/h
+    pulseCount = 0;  // Resetta il conteggio degli impulsi per la prossima lettura
 
     if (isnan(data.temperature) || isnan(data.humidity) || data.pressure == 0.0) {
         data.hasErrors = true;
