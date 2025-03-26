@@ -3,6 +3,8 @@
 
 #include "WeatherStation.h"
 
+extern unsigned long lastTime;
+
 void initializeSensors();
 WeatherData readSensors();
 void restoreSavedPressure();
