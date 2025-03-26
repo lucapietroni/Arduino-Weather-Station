@@ -44,6 +44,9 @@ void initializeSensors() {
 
     if (!bmp.begin(0x76)) Serial.println(F("⚠️ Errore: BMP280 non trovato!"));
     if (!as5600.begin(0x36)) Serial.println(F("⚠️ Errore: AS5600 non trovato!"));
+    
+    pinMode(HALL_SENSOR_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(HALL_SENSOR_PIN), countPulse, FALLING);
 
     preferences.begin("weather", false);
 }
